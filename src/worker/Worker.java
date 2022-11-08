@@ -4,11 +4,15 @@ import server.ServerActions.ServerActions;
 import worker.WorkerActions.WorkerActionsImpl;
 
 import java.rmi.Naming;
+import java.util.UUID;
 
 public class Worker {
+    String id;
     ServerActions serverActions;
 
     public Worker() {
+        this.id = UUID.randomUUID().toString().substring(0, 6);
+
         connect();
     }
 
@@ -16,7 +20,7 @@ public class Worker {
         try {
             serverActions = (ServerActions) Naming.lookup("rmi://localhost:1903/sort");
 
-            WorkerActionsImpl workerActions = new WorkerActionsImpl();
+            WorkerActionsImpl workerActions = new WorkerActionsImpl(this.id);
 
             serverActions.registerWorker(workerActions);
 

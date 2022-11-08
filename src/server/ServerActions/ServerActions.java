@@ -5,6 +5,7 @@ import worker.WorkerActions.WorkerActions;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 public interface ServerActions extends Remote {
     String checkConnection() throws RemoteException;

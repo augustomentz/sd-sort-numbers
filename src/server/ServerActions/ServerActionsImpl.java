@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ServerActionsImpl extends UnicastRemoteObject implements ServerActions {
+    String id;
     List<WorkerActions> workers = new ArrayList<>();
 
     public ServerActionsImpl() throws RemoteException {
@@ -31,12 +32,17 @@ public class ServerActionsImpl extends UnicastRemoteObject implements ServerActi
         this.workers.remove(worker);
     }
 
-    public void send() {
-        int[] vet = {5, 3, 8, 18, 2, 1, 22};
-
+    public void startProcessing(ArrayList<int[]> numbers) {
         try {
-            for (WorkerActions worker : workers) {
-                System.out.println(Arrays.toString(worker.sort(vet)));
+            while(!numbers.isEmpty()) {
+                for (WorkerActions worker : workers) {
+                    if (!worker.isBusy()) {
+                        int[] vet = numbers.get(0);
+                        numbers.remove(0);
+
+                        System.out.println(Arrays.toString(worker.sort(vet)));
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

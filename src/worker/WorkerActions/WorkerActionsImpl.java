@@ -2,19 +2,21 @@ package worker.WorkerActions;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.List;
-import java.util.UUID;
 
 public class WorkerActionsImpl extends UnicastRemoteObject implements WorkerActions {
     String id;
+    private Boolean busy = false;
 
-    public WorkerActionsImpl() throws RemoteException {
+    public WorkerActionsImpl(String id) throws RemoteException {
         super();
 
-        this.id = UUID.randomUUID().toString();
+        this.id = id;
     }
 
     public int[] sort(int[] numbers) {
+        this.setBusy(true);
+        System.out.println(this.id + " está ocupado\n");
+
         int aux = 0;
 
         for(int i = 0; i < numbers.length - 1; i++){
@@ -27,6 +29,16 @@ public class WorkerActionsImpl extends UnicastRemoteObject implements WorkerActi
             }
         }
 
+        this.setBusy(false);
+
         return numbers;
+    }
+
+    public Boolean isBusy() {
+        return this.busy;
+    }
+
+    public void setBusy(Boolean busy) {
+        this.busy = busy;
     }
 }

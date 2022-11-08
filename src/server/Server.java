@@ -3,19 +3,25 @@ package server;
 import server.ServerActions.ServerActionsImpl;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Server extends JFrame {
+    public static int MAX_ARRAY_SIZE = 30000;
+    public static int MAX_ARRAY_QTY = 15;
+
     String URI = "rmi://localhost:1903/sort";
     ServerActionsImpl serverActions;
+    ArrayList<int[]> numbersToSort = new ArrayList<int[]>();
 
     public Server() {
+        this.loadNumbersList();
         this.initComponents();
         this.setVisible(true);
 
@@ -37,13 +43,33 @@ public class Server extends JFrame {
         }
     }
 
+    public static int[] generateRandomNumbers() {
+        Random rand = new Random();
+
+        int numbers[] = new int[MAX_ARRAY_SIZE];
+
+        for (int i =0; i < numbers.length; ++i) {
+            numbers[i] = rand.nextInt(MAX_ARRAY_SIZE);
+        }
+
+        return numbers;
+    }
+
+    void loadNumbersList() {
+        for (int i = 0; i < MAX_ARRAY_QTY; i++) {
+            int[] numbers = generateRandomNumbers();
+
+            numbersToSort.add(numbers);
+        }
+    }
+
     public void initComponents() {
         this.sortButton = new JButton();
         this.sortButton.setText("Ordenar");
         this.sortButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    serverActions.send();
+                    serverActions.startProcessing(numbersToSort);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
