@@ -1,51 +1,39 @@
 package server.ServerActions;
 
-import worker.Worker;
-import worker.WorkerActions.WorkerActions;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class ServerActionsImpl extends UnicastRemoteObject implements ServerActions {
-    String id;
-    List<WorkerActions> workers = new ArrayList<>();
+    private final ArrayList<int[]> unsortedList;
 
-    public ServerActionsImpl() throws RemoteException {
+    public ServerActionsImpl(ArrayList<int[]> unsortedList) throws RemoteException {
         super();
+
+        this.unsortedList = unsortedList;
     }
 
     @Override
-    public String checkConnection() throws RemoteException {
-        return "Connection is established";
+    public int[] requestDemand() throws RemoteException {
+        int[] demand = this.unsortedList.get(0);
+        this.unsortedList.remove(0);
+
+        return demand;
     }
 
     @Override
-    public void registerWorker(WorkerActions worker) throws RemoteException {
-        this.workers.add(worker);
+    public Boolean haveDemand() {
+        return this.unsortedList.size() > 0;
     }
 
     @Override
-    public void unregisterWorker(WorkerActions worker) throws RemoteException {
-        this.workers.remove(worker);
-    }
+    public void notifyArraySorted(String workerId, int[] arraySorted) throws RemoteException {
+        int[] shortArray = new int[20];
 
-    public void startProcessing(ArrayList<int[]> numbers) {
-        try {
-            while(!numbers.isEmpty()) {
-                for (WorkerActions worker : workers) {
-                    if (!worker.isBusy()) {
-                        int[] vet = numbers.get(0);
-                        numbers.remove(0);
+        System.arraycopy(arraySorted, 0, shortArray, 0, 20);
 
-                        System.out.println(Arrays.toString(worker.sort(vet)));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println("Worker#" + workerId + " ordenou: " + Arrays.toString(shortArray));
     }
 }

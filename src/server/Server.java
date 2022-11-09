@@ -2,19 +2,16 @@ package server;
 
 import server.ServerActions.ServerActionsImpl;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
-public class Server extends JFrame {
+public class Server {
     public static int MAX_ARRAY_SIZE = 30000;
-    public static int MAX_ARRAY_QTY = 15;
+    public static int MAX_ARRAY_QTY = 10;
 
     String URI = "rmi://localhost:1903/sort";
     ServerActionsImpl serverActions;
@@ -22,22 +19,22 @@ public class Server extends JFrame {
 
     public Server() {
         this.loadNumbersList();
-        this.initComponents();
-        this.setVisible(true);
 
         up();
     }
 
     public void up() {
         try {
-            this.serverActions = new ServerActionsImpl();
+            this.serverActions = new ServerActionsImpl(numbersToSort);
 
             Registry registry = LocateRegistry.createRegistry(1903);
             Naming.rebind(URI, this.serverActions);
 
             System.out.println("=======================");
             System.out.println("====== SERVER UP ======");
-            System.out.println("=======================");
+            System.out.println("=======================\n");
+
+            this.showUnorderedList();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -63,27 +60,22 @@ public class Server extends JFrame {
         }
     }
 
-    public void initComponents() {
-        this.sortButton = new JButton();
-        this.sortButton.setText("Ordenar");
-        this.sortButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    serverActions.startProcessing(numbersToSort);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-            }
-        });
+    void showUnorderedList() {
+        System.out.println("LISTA DE TAREFAS: \n");
 
-        this.setLayout(new GridBagLayout());
-        this.setSize(300, 100);
-        this.getContentPane().add(sortButton);
+        for (int[] numbers : numbersToSort) {
+            int[] shortArray = new int[20];
+
+            System.arraycopy(numbers, 0, shortArray, 0, 20);
+
+            System.out.println(Arrays.toString(shortArray));
+        }
+
+        System.out.println("");
     }
+
 
     public static void main(String args[]) {
         Server server = new Server();
     }
-
-    private JButton sortButton;
 }

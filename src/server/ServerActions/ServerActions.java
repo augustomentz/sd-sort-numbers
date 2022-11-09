@@ -1,14 +1,10 @@
 package server.ServerActions;
 
-import worker.Worker;
-import worker.WorkerActions.WorkerActions;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 public interface ServerActions extends Remote {
-    String checkConnection() throws RemoteException;
-    void registerWorker(WorkerActions worker) throws RemoteException;
-    void unregisterWorker(WorkerActions worker) throws RemoteException;
+    int[] requestDemand() throws RemoteException;
+    Boolean haveDemand() throws  RemoteException;
+    void notifyArraySorted(String workerId, int[] arraySorted) throws RemoteException;
 }
