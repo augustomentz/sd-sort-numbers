@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Server {
-    public static int MAX_ARRAY_SIZE = 30000;
+    public static int MAX_ARRAY_SIZE = 10000;
     public static int MAX_ARRAY_QTY = 10;
 
     String URI = "rmi://localhost:1903/sort";
